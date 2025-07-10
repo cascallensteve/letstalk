@@ -38,7 +38,8 @@ ALLOWED_HOSTS = ['*'] if DEBUG else [
     os.getenv('VERCEL_URL', ''),
     os.getenv('ALLOWED_HOST', ''),
     'whisperlink.vercel.app',
-    'whisperlink-backend.vercel.app'
+    'whisperlink-backend.vercel.app',
+    'letstalk.vercel.app'
 ]
 
 
