@@ -101,10 +101,19 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT', '6543'),
         'OPTIONS': {
             'sslmode': 'require',
-            'connect_timeout': 10,
+            'connect_timeout': 30,
         },
+        'CONN_MAX_AGE': 60,
     }
 }
+
+# Fallback to SQLite for development if environment variables not set
+import sys
+if 'collectstatic' in sys.argv:
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': ':memory:',
+    }
 
 
 # Password validation
@@ -149,8 +158,11 @@ STATICFILES_DIRS = [
 # Static files collection (for production)
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
-# WhiteNoise configuration
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# WhiteNoise configuration for Vercel
+if not DEBUG:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
+else:
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
